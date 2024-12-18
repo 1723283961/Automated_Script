@@ -51,4 +51,38 @@ public class SelectRunFileConfig {
         User32.INSTANCE.PostMessage(hwnd, WM_LBUTTONUP, new WinDef.WPARAM(0), lParam);
         System.out.println("点击："+ x + " " + y);
     }
+
+    /**
+     * 模拟页面向左滑动
+     *
+     * @param hwnd 窗口句柄
+     * @param startX 起始 X 坐标
+     * @param startY 起始 Y 坐标
+     * @param endX   结束 X 坐标
+     * @param endY   结束 Y 坐标
+     */
+    public static void swipeLeft(WinDef.HWND hwnd, int startX, int startY, int endX, int endY) {
+        final int WM_LBUTTONDOWN = 0x0201; // 鼠标左键按下
+        final int WM_MOUSEMOVE = 0x0200;   // 鼠标移动
+        final int WM_LBUTTONUP = 0x0202;   // 鼠标左键抬起
+
+        // 模拟鼠标按下
+        User32.INSTANCE.PostMessage(hwnd, WM_LBUTTONDOWN, new WinDef.WPARAM(0), new WinDef.LPARAM(((long) startY << 16) | startX));
+
+        // 模拟鼠标拖动
+        int stepCount = 10; // 滑动步数
+        for (int i = 1; i <= stepCount; i++) {
+            int currentX = startX + (endX - startX) * i / stepCount;
+            int currentY = startY + (endY - startY) * i / stepCount;
+            User32.INSTANCE.PostMessage(hwnd, WM_MOUSEMOVE, new WinDef.WPARAM(0), new WinDef.LPARAM(((long) currentY << 16) | currentX));
+            try {
+                Thread.sleep(50); // 每步延迟 50ms
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // 模拟鼠标抬起
+        User32.INSTANCE.PostMessage(hwnd, WM_LBUTTONUP, new WinDef.WPARAM(0), new WinDef.LPARAM(((long) endY << 16) | endX));
+        System.out.println("页面向左滑动完成！");
+    }
 }

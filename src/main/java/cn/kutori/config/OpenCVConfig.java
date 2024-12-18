@@ -1,8 +1,8 @@
 package cn.kutori.config;
 
+import com.sun.jna.platform.win32.WinDef;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
+import static cn.kutori.config.SelectRunFileConfig.swipeLeft;
 import static cn.kutori.enumPojo.coordinate.COORDINATEX;
 import static cn.kutori.enumPojo.coordinate.COORDINATEY;
 
@@ -59,7 +60,7 @@ public class OpenCVConfig {
             System.out.println("找到目标元素，位置：(" + mmr.maxLoc.x + ", " + mmr.maxLoc.y + ")");
             return Map.of(COORDINATEX.value, (int)  mmr.maxLoc.x , COORDINATEY.value,  (int)mmr.maxLoc.y);
         }
-        throw new Exception("未找到符合阈值元素");
+        return null;
     }
 
     /**
@@ -79,5 +80,23 @@ public class OpenCVConfig {
         return new int[]{width, height};
     }
 
+    /**
+     * 如果是从多重匹配
+     * @param hwnd 句柄
+     * @param main 主界面
+     * @param sub 组件
+     * @return 坐标
+     * @throws Exception 抛出
+     */
+    public Map<String,Integer> multipleImages(WinDef.HWND hwnd, String [] main, String sub) throws Exception {
+        for(String m : main){
+            if(getXOrY(m,sub) != null){
+                return getXOrY(m,sub);
+                break;
+            }else {
+                swipeLeft(hwnd, 800, 500, 300, 500); // 模拟从右向左滑动
+            }
+        }
 
+    }
 }
