@@ -53,8 +53,7 @@ public class SelectRunFileConfig {
     }
 
     /**
-     * 模拟页面向左滑动
-     *
+     * 模拟页面滑动
      * @param hwnd 窗口句柄
      * @param startX 起始 X 坐标
      * @param startY 起始 Y 坐标
@@ -83,6 +82,8 @@ public class SelectRunFileConfig {
         }
         // 模拟鼠标抬起
         User32.INSTANCE.PostMessage(hwnd, WM_LBUTTONUP, new WinDef.WPARAM(0), new WinDef.LPARAM(((long) endY << 16) | endX));
-        System.out.println("页面向左滑动完成！");
+        System.out.println("页面滑动完成！");
     }
+
+
 }

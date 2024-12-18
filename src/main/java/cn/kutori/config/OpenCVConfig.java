@@ -18,6 +18,8 @@ import static cn.kutori.enumPojo.coordinate.COORDINATEY;
 
 public class OpenCVConfig {
 
+    private String ImagePath;
+
     /**
      * 加载OpenCV库
      */
@@ -31,6 +33,7 @@ public class OpenCVConfig {
                 String myConfig = properties.getProperty("config.opencv");
                 System.out.println("Config value: " + myConfig);
                 System.load(myConfig);
+                ImagePath = properties.getProperty("config.ImagePath");
         } catch (IOException ex) {
             throw new Exception(ex);
         }
@@ -44,8 +47,8 @@ public class OpenCVConfig {
      */
     public Map<String,Integer> getXOrY(String main, String sub) throws Exception {
         // 加载截图和模板图像
-        Mat mainImage = Imgcodecs.imread(main);
-        Mat subImages = Imgcodecs.imread(sub);
+        Mat mainImage = Imgcodecs.imread(ImagePath + main);
+        Mat subImages = Imgcodecs.imread(ImagePath + sub);
         if (mainImage.empty() || subImages.empty()) {
             throw new Exception("无法加载图片，请检查文件路径!");
         }
@@ -62,15 +65,13 @@ public class OpenCVConfig {
         }
         return null;
     }
-
     /**
      * 获取图片的宽度和高度
      * @param imagePath 图片路径
      * @return 图片的宽度和高度
      */
-    public  int[] getImageSize(String imagePath) throws Exception {
-        // 读取图片
-        Mat image = Imgcodecs.imread(imagePath, Imgcodecs.IMREAD_UNCHANGED);
+    public  int[] getImageSize(String imagePath) throws Exception {        // 读取图片
+        Mat image = Imgcodecs.imread(ImagePath + imagePath, Imgcodecs.IMREAD_UNCHANGED);
         if (image.empty()) {
             throw new Exception("无法加载图片：" + imagePath);
         }
@@ -88,15 +89,16 @@ public class OpenCVConfig {
      * @return 坐标
      * @throws Exception 抛出
      */
-    public Map<String,Integer> multipleImages(WinDef.HWND hwnd, String [] main, String sub) throws Exception {
-        for(String m : main){
-            if(getXOrY(m,sub) != null){
-                return getXOrY(m,sub);
-                break;
-            }else {
+    public Map<String, Integer> multipleImages(WinDef.HWND hwnd, String[] main, String sub) throws Exception {
+        for (String m : main) {
+            Map<String, Integer> result = getXOrY(m, sub); // 调用一次 getXOrY
+            if (result != null) {
+                return result; // 找到结果，立即返回
+            } else {
                 swipeLeft(hwnd, 800, 500, 300, 500); // 模拟从右向左滑动
             }
         }
-
+        throw new Exception("未找到符合条件的图片");
     }
+
 }

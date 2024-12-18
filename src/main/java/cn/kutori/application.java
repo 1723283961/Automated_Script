@@ -17,8 +17,8 @@ public class application {
         openCVConfig.init();
 
         //图片路径
-        String fullImagePath = "E:\\selfUse\\test1.png";
-        String templateImagePath = "E:\\selfUse\\test2.png";
+        String fullImagePath = "test1.png";
+        String templateImagePath = "test2.png";
 
         // 获取窗口句柄
         SelectRunFileConfig selectRunFileConfig = new SelectRunFileConfig();
