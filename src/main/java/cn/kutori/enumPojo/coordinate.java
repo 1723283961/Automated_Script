@@ -1,7 +1,6 @@
 package cn.kutori.enumPojo;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum coordinate {
